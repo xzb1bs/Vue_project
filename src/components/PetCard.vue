@@ -3,13 +3,14 @@
     <img :src="pet.img" :alt="pet.name" class="pet-img">
     <h3>{{ pet.name }}</h3>
     <p class="small">{{ pet.type }} • {{ pet.age }} • {{ pet.location }}</p>
-    <p>{{ pet.desc }}</p>
-    <button class="btn-delete" @click="$emit('delete', pet.id)">Удалить</button>
+    <p class="desc">{{ pet.desc.slice(0, 80) }}...</p>
+    <button class="btn-more" @click="$emit('open', pet)">Подробнее</button>
   </div>
 </template>
 
 <script setup>
 defineProps({ pet: Object })
+defineEmits(['open'])
 </script>
 
 <style scoped>
@@ -25,13 +26,22 @@ defineProps({ pet: Object })
   object-fit: cover;
   border-radius: 8px;
 }
-.btn-delete {
-  background: #ff7675;
+.small {
+  font-size: 13px;
+  color: #6b7280;
+}
+.desc {
+  font-size: 14px;
+  margin-top: 4px;
+}
+.btn-more {
+  background: linear-gradient(90deg, #ff7aa2, #6ee7b7);
   border: none;
   color: white;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 8px;
+  font-weight: 600;
 }
 </style>
