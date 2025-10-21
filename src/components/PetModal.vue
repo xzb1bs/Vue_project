@@ -4,7 +4,7 @@
       <img :src="pet.img" :alt="pet.name">
       <div class="modal-body">
         <h2>{{ pet.name }}</h2>
-        <p class="info">{{ pet.type }} • {{ pet.breed }} • {{ pet.age }} • {{ pet.location }}</p>
+        <p class="info">{{ pet.type }} • {{ pet.breed }} • {{ pet.ageText }} • {{ pet.location }}</p>
         <p>{{ pet.desc }}</p>
 
         <h3>Связаться с владельцем</h3>

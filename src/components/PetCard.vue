@@ -2,15 +2,25 @@
   <div class="card">
     <img :src="pet.img" :alt="pet.name" class="pet-img">
     <h3>{{ pet.name }}</h3>
-    <p class="small">{{ pet.type }} • {{ pet.age }} • {{ pet.location }}</p>
+    <p class="small">{{ pet.type }} • {{ pet.ageText }} • {{ pet.location }}</p>
     <p class="desc">{{ pet.desc.slice(0, 80) }}...</p>
-    <button class="btn-more" @click="$emit('open', pet)">Подробнее</button>
+    <div style="display: flex; gap: 8px; margin-top: 8px;">
+      <button class="btn-more" @click="$emit('open', pet)">Подробнее</button>
+      <button class="btn-like" @click="$emit('like', pet.id)">{{ pet.liked ? '♥' : '♡' }}</button>
+      <button v-if="showDelete" class="btn-delete" @click="$emit('delete', pet.id)">🗑️</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-defineProps({ pet: Object })
-defineEmits(['open'])
+defineProps({ 
+  pet: Object,
+  showDelete: {
+    type: Boolean,
+    default: false
+  }
+})
+defineEmits(['open', 'like', 'delete'])
 </script>
 
 <style scoped>
@@ -41,7 +51,36 @@ defineEmits(['open'])
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 8px;
   font-weight: 600;
+  flex: 1;
+}
+.btn-like {
+  background: transparent;
+  border: 2px solid #ff7aa2;
+  color: #ff7aa2;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-like:hover {
+  background: #ff7aa2;
+  color: white;
+}
+.btn-delete {
+  background: transparent;
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+.btn-delete:hover {
+  background: #ef4444;
+  color: white;
 }
 </style>
