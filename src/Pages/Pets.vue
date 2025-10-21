@@ -12,8 +12,10 @@
             v-for="p in filtered"
             :key="p.id"
             :pet="p"
+            :showDelete="isLoggedIn"
             @open="open(p)"
             @like="like(p.id)"
+            @delete="deletePet"
         />
       </div>
     </section>
@@ -30,14 +32,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePets } from '@/composables/usePets'
 import AppHeader from '@/components/AppHeader.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import PetCard from '@/components/PetCard.vue'
 import PetModal from '@/components/PetModal.vue'
 
-const { list, getById, toggleLike, types, cities, genders } = usePets()
+const { list, getById, toggleLike, remove, types, cities, genders } = usePets()
+const isLoggedIn = ref(false)
 
 const filter = ref({
   q: '',
@@ -73,6 +76,29 @@ function like(id) {
 function onContact(payload) {
   alert('Сообщение отправлено:\n' + JSON.stringify(payload, null, 2))
 }
+
+function deletePet(id) {
+  if (confirm('Вы уверены, что хотите удалить этого питомца?')) {
+    remove(id)
+    alert('Питомец удален!')
+  }
+}
+
+function checkLoginStatus() {
+  try {
+    const userData = localStorage.getItem('qamqorlyq_user')
+    if (userData) {
+      const user = JSON.parse(userData)
+      isLoggedIn.value = user.isLoggedIn
+    }
+  } catch (e) {
+    console.warn('Error reading user data:', e)
+  }
+}
+
+onMounted(() => {
+  checkLoginStatus()
+})
 </script>
 
 <style scoped>

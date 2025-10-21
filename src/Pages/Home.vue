@@ -10,7 +10,8 @@
           </p>
           <div class="hero-cta">
             <router-link to="/pets" class="btn btn-primary">Найти питомца</router-link>
-            <button class="btn btn-ghost" @click="showForm = true">Добавить питомца</button>
+            <button v-if="isLoggedIn" class="btn btn-ghost" @click="showForm = true">Добавить питомца</button>
+            <router-link v-else to="/login" class="btn btn-ghost">Войти для добавления</router-link>
           </div>
         </div>
         <div>
@@ -47,7 +48,7 @@
       </div>
     </section>
 
-    <div v-if="showForm" class="modal-backdrop" @click.self="showForm = false">
+    <div v-if="showForm && isLoggedIn" class="modal-backdrop" @click.self="showForm = false">
       <div class="modal">
         <AddPetForm @add="addPet" />
         <button class="close-btn" @click="showForm = false">Закрыть</button>
@@ -63,47 +64,38 @@
 <script setup>
 import AppHeader from '@/components/AppHeader.vue'
 import AddPetForm from '@/components/AddPetForm.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { usePets } from '@/composables/usePets'
 
 const { list, add } = usePets()
 const allPets = list
 const showForm = ref(false)
+const isLoggedIn = ref(false)
 
 function addPet(pet) {
   add(pet)
   showForm.value = false
   alert(`Питомец "${pet.name}" добавлен!`)
 }
+
+function checkLoginStatus() {
+  try {
+    const userData = localStorage.getItem('qamqorlyq_user')
+    if (userData) {
+      const user = JSON.parse(userData)
+      isLoggedIn.value = user.isLoggedIn
+    }
+  } catch (e) {
+    console.warn('Error reading user data:', e)
+  }
+}
+
+onMounted(() => {
+  checkLoginStatus()
+})
 </script>
 
 <style scoped>
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-}
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-  width: 400px;
-}
-.close-btn {
-  background: #e5e7eb;
-  border: none;
-  color: #111;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
 .modal-backdrop {
    position: fixed;
    inset: 0;

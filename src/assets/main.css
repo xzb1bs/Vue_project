@@ -47,6 +47,10 @@ body{margin:0;background:linear-gradient(180deg,#f2fbff 0%, #eef8ff 100%);color:
 
 .footer{padding:24px;text-align:center;color:var(--muted);margin-top:24px}
 
+/* Additional button styles */
+.button{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600;background:var(--accent);color:white}
+.form-row{display:flex;gap:8px;margin-top:12px}
+
 @media (max-width:720px){
     .hero{flex-direction:column}
     .modal{flex-direction:column}
