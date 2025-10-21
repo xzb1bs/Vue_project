@@ -25,8 +25,10 @@ function submit() {
   const newPet = {
     id: Date.now(),
     name: name.value,
+    displayName: name.value,
     type: type.value,
-    age: age.value,
+    ageText: age.value,
+    gender: 'Неизвестен',
     location: location.value,
     img: img.value,
     desc: desc.value
@@ -35,25 +37,3 @@ function submit() {
   name.value = type.value = age.value = location.value = img.value = desc.value = ''
 }
 </script>
-
-<style scoped>
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-input, textarea {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-.btn {
-  background: #38bdf8;
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-</style>

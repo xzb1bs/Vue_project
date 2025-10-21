@@ -18,7 +18,6 @@
       </div>
     </section>
 
-    <!-- Модальное окно -->
     <PetModal
         v-if="active"
         :pet="active"
