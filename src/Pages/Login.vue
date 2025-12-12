@@ -70,7 +70,6 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-// Если пользователь уже авторизован, перенаправляем на главную
 onMounted(() => {
   userStore.checkAuth()
   if (userStore.isLoggedIn) {
@@ -78,11 +77,9 @@ onMounted(() => {
     return
   }
   
-  // Проверяем query параметры для автозаполнения email после регистрации
   const route = router.currentRoute.value
   if (route.query.email) {
     email.value = route.query.email
-    // Удаляем query параметр из URL
     router.replace({ path: '/login', query: {} })
   }
 })
@@ -98,21 +95,16 @@ async function handleLogin() {
   successMessage.value = ''
 
   try {
-    // Симулируем задержку сети
     await new Promise(resolve => setTimeout(resolve, 800))
     
-    // Проверяем учетные данные
     const user = loginUser(email.value, password.value)
     
-    // Сохраняем в store
     userStore.login(user.email, user.name)
     
     successMessage.value = 'Успешный вход!'
     
-    // Обновляем статус в store
     userStore.checkAuth()
     
-    // Перенаправляем на главную страницу
     setTimeout(() => {
       router.push('/')
     }, 800)

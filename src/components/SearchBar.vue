@@ -38,13 +38,11 @@ const city = ref(props.cities?.[0] ?? 'Все города')
 const type = ref(props.types?.[0] ?? 'Все типы')
 const gender = ref(props.genders?.[0] ?? 'Любой')
 
-// Using reactive for filter state
 const filterState = reactive({
   hasActiveFilters: false,
   lastApplied: null
 })
 
-// Using watchEffect to track filter changes
 watchEffect(() => {
   filterState.hasActiveFilters = q.value.trim() !== '' || 
                                   city.value !== (props.cities?.[0] ?? 'Все города') ||
@@ -52,14 +50,11 @@ watchEffect(() => {
                                   gender.value !== (props.genders?.[0] ?? 'Любой')
 })
 
-// Using watch to debounce search
 let searchTimeout = null
 watch([q, city, type, gender], () => {
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
-  // Auto-apply after 500ms of inactivity (optional feature)
-  // searchTimeout = setTimeout(apply, 500)
 })
 
 function apply(){ 
@@ -77,17 +72,13 @@ function reset(){
 
 onMounted(() => {
   console.log('SearchBar component mounted')
-  // Apply initial filter
   apply()
 })
 
 onUpdated(() => {
-  // Component updated - can be used for tracking
-  // console.log('SearchBar component updated')
 })
 
 onUnmounted(() => {
-  // Cleanup
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }

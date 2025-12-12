@@ -60,20 +60,6 @@ const types = computed(() => ['Все типы', ...Array.from(new Set(list.valu
 const cities = computed(() => ['Все города', ...Array.from(new Set(list.value.map(x => x.location)))])
 const genders = ['Любой', 'Мальчик', 'Девочка']
 
-// if (import.meta.hot) {
-//     import.meta.hot.accept('/src/data/pets.js', async () => {
-//         try {
-//             const m = await import('@/data/pets.js?t=' + Date.now())
-//             const fresh = JSON.parse(JSON.stringify(m.pets ?? m.default ?? initialPets))
-//              list.value = fresh
-//             save()
-//             console.log('[HMR] pets.js обновлён — данные перезагружены')
-//         } catch (err) {
-//             console.warn('[HMR] не удалось перезагрузить pets.js', err)
-//         }
-//     })
-// }
-
 export function usePets() {
     return {
         list,

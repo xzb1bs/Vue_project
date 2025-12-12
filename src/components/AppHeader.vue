@@ -28,7 +28,6 @@ import { useUserStore } from '@/stores/user'
 const router = useRouter()
 const userStore = useUserStore()
 
-// Используем computed из store
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 const userEmail = computed(() => userStore.userEmail)
 
@@ -37,12 +36,10 @@ function handleLogout() {
   router.push('/')
 }
 
-// Проверяем авторизацию при монтировании
 onMounted(() => {
   userStore.checkAuth()
 })
 
-// Слушаем изменения в localStorage (если пользователь залогинился в другом окне)
 watch(() => localStorage.getItem('qamqorlyq_user'), () => {
   userStore.checkAuth()
 })

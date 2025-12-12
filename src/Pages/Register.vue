@@ -93,7 +93,6 @@ import { registerUser } from '@/api/authApi'
 const router = useRouter()
 const userStore = useUserStore()
 
-// Если пользователь уже авторизован, перенаправляем на главную
 onMounted(() => {
   userStore.checkAuth()
   if (userStore.isLoggedIn) {
@@ -144,7 +143,6 @@ function validatePassword() {
     errors.password = ''
   }
   
-  // Проверяем подтверждение пароля, если оно уже введено
   if (confirmPassword.value) {
     validateConfirmPassword()
   }
@@ -171,7 +169,6 @@ const isFormValid = computed(() => {
 })
 
 async function handleRegister() {
-  // Валидация всех полей
   validateEmail()
   validatePassword()
   validateConfirmPassword()
@@ -189,24 +186,19 @@ async function handleRegister() {
   successMessage.value = ''
   
   try {
-    // Симулируем задержку сети
     await new Promise(resolve => setTimeout(resolve, 1000))
     
-    // Регистрируем пользователя
     registerUser(email.value, password.value, name.value || '')
     
     successMessage.value = 'Регистрация успешна! Перенаправление на страницу входа...'
     
-    // Сохраняем email для автозаполнения в форме логина
     const userEmail = email.value
     
-    // Очищаем форму регистрации
     email.value = ''
     password.value = ''
     confirmPassword.value = ''
     name.value = ''
     
-    // Перенаправляем на страницу входа с email в query параметре
     setTimeout(() => {
       router.push({ path: '/login', query: { email: userEmail } })
     }, 1500)

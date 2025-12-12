@@ -1,7 +1,5 @@
-// API для работы с пользователями
 const USERS_STORAGE_KEY = 'qamqorlyq_users'
 
-// Получить всех зарегистрированных пользователей
 export function getRegisteredUsers() {
   try {
     const users = localStorage.getItem(USERS_STORAGE_KEY)
@@ -12,7 +10,6 @@ export function getRegisteredUsers() {
   }
 }
 
-// Сохранить зарегистрированных пользователей
 export function saveRegisteredUsers(users) {
   try {
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users))
@@ -21,19 +18,16 @@ export function saveRegisteredUsers(users) {
   }
 }
 
-// Регистрация нового пользователя
 export function registerUser(email, password, name = '') {
   const users = getRegisteredUsers()
   
-  // Проверка, существует ли пользователь
   if (users.find(u => u.email === email)) {
     throw new Error('Пользователь с таким email уже существует')
   }
   
-  // Добавляем нового пользователя
   const newUser = {
     email,
-    password, // В реальном приложении пароль должен быть захеширован
+    password,
     name,
     registeredAt: Date.now()
   }
@@ -44,11 +38,9 @@ export function registerUser(email, password, name = '') {
   return newUser
 }
 
-// Авторизация пользователя
 export function loginUser(email, password) {
   const users = getRegisteredUsers()
   
-  // Ищем пользователя
   const user = users.find(u => u.email === email && u.password === password)
   
   if (!user) {
@@ -61,7 +53,6 @@ export function loginUser(email, password) {
   }
 }
 
-// Добавляем демо пользователя при первой загрузке
 export function initDemoUser() {
   const users = getRegisteredUsers()
   const demoEmail = 'admin@qamqorlyq.com'
@@ -77,6 +68,5 @@ export function initDemoUser() {
   }
 }
 
-// Инициализация при импорте
 initDemoUser()
 

@@ -38,11 +38,9 @@ describe('SearchBar', () => {
       props: mockProps
     })
 
-    // Set some values
     await wrapper.find('input').setValue('test search')
     await wrapper.findAll('select')[0].setValue('Almaty')
 
-    // Reset
     await wrapper.vm.reset()
 
     expect(wrapper.find('input').element.value).toBe('')

@@ -49,15 +49,11 @@ const router = createRouter({
     routes
 })
 
-// Navigation guard
 router.beforeEach((to, from, next) => {
-    // Example: Check if user is logged in for protected routes
-    const protectedRoutes = ['/pets'] // Add routes that require auth
+    const protectedRoutes = ['/pets']
     const isProtected = protectedRoutes.some(route => to.path.startsWith(route))
     
     if (isProtected) {
-        // You can add auth check here
-        // For now, we'll just allow access
         next()
     } else {
         next()

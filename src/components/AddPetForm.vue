@@ -198,7 +198,6 @@ const isFormValid = computed(() => {
 })
 
 function submit() {
-  // Validate all fields
   validateName()
   validateType()
   validateBreed()
@@ -226,7 +225,6 @@ function submit() {
   }
   emit('add', newPet)
   
-  // Reset form
   name.value = ''
   type.value = ''
   age.value = ''
@@ -235,7 +233,6 @@ function submit() {
   img.value = ''
   desc.value = ''
   
-  // Clear errors
   Object.keys(errors).forEach(key => errors[key] = '')
 }
 </script>
