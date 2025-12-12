@@ -1,13 +1,25 @@
 <template>
-  <div class="card">
+  <div class="card" :class="{ 'liked': pet.liked, 'has-delete': showDelete }">
     <img :src="pet.img" :alt="pet.name" class="pet-img">
     <h3>{{ pet.name }}</h3>
     <p class="small">{{ pet.type }} • {{ pet.ageText }} • {{ pet.location }}</p>
     <p class="desc">{{ pet.desc.slice(0, 80) }}...</p>
     <div style="display: flex; gap: 8px; margin-top: 8px;">
       <button class="btn-more" @click="$emit('open', pet)">Подробнее</button>
-      <button class="btn-like" @click="$emit('like', pet.id)">{{ pet.liked ? '♥' : '♡' }}</button>
-      <button v-if="showDelete" class="btn-delete" @click="$emit('delete', pet.id)">🗑️</button>
+      <button 
+        class="btn-like" 
+        :class="{ 'liked': pet.liked }"
+        @click="$emit('like', pet.id)"
+      >
+        {{ pet.liked ? '♥' : '♡' }}
+      </button>
+      <button 
+        v-show="showDelete" 
+        class="btn-delete" 
+        @click="$emit('delete', pet.id)"
+      >
+        🗑️
+      </button>
     </div>
   </div>
 </template>
@@ -29,6 +41,16 @@ defineEmits(['open', 'like', 'delete'])
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.card.liked {
+  border: 2px solid #ff7aa2;
 }
 .pet-img {
   width: 100%;
@@ -63,6 +85,10 @@ defineEmits(['open', 'like', 'delete'])
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s;
+}
+.btn-like.liked {
+  background: #ff7aa2;
+  color: white;
 }
 .btn-like:hover {
   background: #ff7aa2;

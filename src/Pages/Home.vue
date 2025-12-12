@@ -64,13 +64,16 @@
 <script setup>
 import AppHeader from '@/components/AppHeader.vue'
 import AddPetForm from '@/components/AddPetForm.vue'
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { usePets } from '@/composables/usePets'
+import { useUserStore } from '@/stores/user'
 
 const { list, add } = usePets()
 const allPets = list
 const showForm = ref(false)
-const isLoggedIn = ref(false)
+const userStore = useUserStore()
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 function addPet(pet) {
   add(pet)
@@ -78,20 +81,12 @@ function addPet(pet) {
   alert(`Питомец "${pet.name}" добавлен!`)
 }
 
-function checkLoginStatus() {
-  try {
-    const userData = localStorage.getItem('qamqorlyq_user')
-    if (userData) {
-      const user = JSON.parse(userData)
-      isLoggedIn.value = user.isLoggedIn
-    }
-  } catch (e) {
-    console.warn('Error reading user data:', e)
-  }
-}
-
 onMounted(() => {
-  checkLoginStatus()
+  userStore.checkAuth()
+})
+
+watch(() => localStorage.getItem('qamqorlyq_user'), () => {
+  userStore.checkAuth()
 })
 </script>
 

@@ -7,7 +7,11 @@
     <nav class="nav">
       <router-link to="/">Главная</router-link>
       <router-link to="/pets">Все питомцы</router-link>
-      <button v-if="!isLoggedIn" class="cta" @click="$router.push('/login')">Войти</button>
+      <router-link to="/pets-api">API Питомцы</router-link>
+      <div v-if="!isLoggedIn" class="auth-buttons">
+        <router-link to="/login" class="auth-link">Войти</router-link>
+        <router-link to="/register" class="auth-link register-link">Регистрация</router-link>
+      </div>
       <div v-else class="user-menu">
         <span class="user-email">{{ userEmail }}</span>
         <button class="logout-btn" @click="handleLogout">Выйти</button>
@@ -17,35 +21,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
-const isLoggedIn = ref(false)
-const userEmail = ref('')
+const userStore = useUserStore()
 
-function checkLoginStatus() {
-  try {
-    const userData = localStorage.getItem('qamqorlyq_user')
-    if (userData) {
-      const user = JSON.parse(userData)
-      isLoggedIn.value = user.isLoggedIn
-      userEmail.value = user.email
-    }
-  } catch (e) {
-    console.warn('Error reading user data:', e)
-  }
-}
+// Используем computed из store
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+const userEmail = computed(() => userStore.userEmail)
 
 function handleLogout() {
-  localStorage.removeItem('qamqorlyq_user')
-  isLoggedIn.value = false
-  userEmail.value = ''
+  userStore.logout()
   router.push('/')
 }
 
+// Проверяем авторизацию при монтировании
 onMounted(() => {
-  checkLoginStatus()
+  userStore.checkAuth()
+})
+
+// Слушаем изменения в localStorage (если пользователь залогинился в другом окне)
+watch(() => localStorage.getItem('qamqorlyq_user'), () => {
+  userStore.checkAuth()
 })
 </script>
 <style>
@@ -88,5 +87,42 @@ object-fit: contain;
   background: rgba(239, 68, 68, 0.1);
   border-color: #ef4444;
   color: #ef4444;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-link {
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.auth-link:first-child {
+  color: var(--text, #071233);
+  background: transparent;
+  border-color: rgba(10, 20, 40, 0.1);
+}
+
+.auth-link:first-child:hover {
+  background: rgba(10, 20, 40, 0.05);
+}
+
+.register-link {
+  background: linear-gradient(90deg, var(--accent, #ff7aa2), #ffb3cf);
+  color: white;
+  border: none;
+}
+
+.register-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 122, 162, 0.3);
 }
 </style>

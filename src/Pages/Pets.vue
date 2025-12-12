@@ -1,11 +1,10 @@
 <template>
   <div>
-    <AppHeader />
     <section class="container">
       <h1>Найдите своего нового друга</h1>
       <p class="small">{{ filtered.length }} питомцев ждут своего дома</p>
 
-      <SearchBar :types="types" :cities="cities" :genders="genders" @search="onSearch" />
+      <SearchBar :types="types" :cities="cities" :genders="genders" @search="onSearch"></SearchBar>
 
       <div class="grid">
         <PetCard
@@ -32,15 +31,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { usePets } from '@/composables/usePets'
-import AppHeader from '@/components/AppHeader.vue'
+import { useUserStore } from '@/stores/user'
 import SearchBar from '@/components/SearchBar.vue'
 import PetCard from '@/components/PetCard.vue'
 import PetModal from '@/components/PetModal.vue'
 
 const { list, getById, toggleLike, remove, types, cities, genders } = usePets()
-const isLoggedIn = ref(false)
+const userStore = useUserStore()
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 const filter = ref({
   q: '',
@@ -84,20 +85,12 @@ function deletePet(id) {
   }
 }
 
-function checkLoginStatus() {
-  try {
-    const userData = localStorage.getItem('qamqorlyq_user')
-    if (userData) {
-      const user = JSON.parse(userData)
-      isLoggedIn.value = user.isLoggedIn
-    }
-  } catch (e) {
-    console.warn('Error reading user data:', e)
-  }
-}
-
 onMounted(() => {
-  checkLoginStatus()
+  userStore.checkAuth()
+})
+
+watch(() => localStorage.getItem('qamqorlyq_user'), () => {
+  userStore.checkAuth()
 })
 </script>
 

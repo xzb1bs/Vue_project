@@ -24,17 +24,22 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { usePets } from '@/composables/usePets'
-import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { useRouter, useRoute } from 'vue-router'
 import ContactForm from '@/components/ContactForm.vue'
 
 const { getById, toggleLike, remove } = usePets()
 const router = useRouter()
-const props = defineProps({ id: String })
-const pet = getById(props.id) || { name: 'Not found', img:'', type:'', ageText:'', breed:'', location:'', desc:'' }
+const route = useRoute()
+const userStore = useUserStore()
+
+const petId = route.params.id
+const pet = getById(petId) || { name: 'Not found', img:'', type:'', ageText:'', breed:'', location:'', desc:'' }
 const showContact = ref(false)
-const isLoggedIn = ref(false)
+
+const isLoggedIn = computed(() => userStore.isLoggedIn)
 
 function like(){ toggleLike(pet.id) }
 function openContact(){ showContact.value = true }
@@ -48,20 +53,12 @@ function deletePet() {
   }
 }
 
-function checkLoginStatus() {
-  try {
-    const userData = localStorage.getItem('qamqorlyq_user')
-    if (userData) {
-      const user = JSON.parse(userData)
-      isLoggedIn.value = user.isLoggedIn
-    }
-  } catch (e) {
-    console.warn('Error reading user data:', e)
-  }
-}
-
 onMounted(() => {
-  checkLoginStatus()
+  userStore.checkAuth()
+})
+
+watch(() => localStorage.getItem('qamqorlyq_user'), () => {
+  userStore.checkAuth()
 })
 </script>
 

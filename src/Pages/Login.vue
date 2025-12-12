@@ -42,54 +42,85 @@
         </div>
       </form>
       
+      <div class="login-footer-links">
+        <p>Нет аккаунта? <router-link to="/register" class="link">Зарегистрироваться</router-link></p>
+      </div>
+      
       <div class="demo-credentials">
         <h3>Демо аккаунт:</h3>
         <p><strong>Email:</strong> admin@qamqorlyq.com</p>
         <p><strong>Пароль:</strong> admin123</p>
-      </div>
+      </div> 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+import { loginUser } from '@/api/authApi'
 
 const router = useRouter()
+const userStore = useUserStore()
+
 const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 
-// Demo credentials
-const DEMO_EMAIL = 'admin@qamqorlyq.com'
-const DEMO_PASSWORD = 'admin123'
+// Если пользователь уже авторизован, перенаправляем на главную
+onMounted(() => {
+  userStore.checkAuth()
+  if (userStore.isLoggedIn) {
+    router.push('/')
+    return
+  }
+  
+  // Проверяем query параметры для автозаполнения email после регистрации
+  const route = router.currentRoute.value
+  if (route.query.email) {
+    email.value = route.query.email
+    // Удаляем query параметр из URL
+    router.replace({ path: '/login', query: {} })
+  }
+})
 
-function handleLogin() {
+async function handleLogin() {
+  if (!email.value || !password.value) {
+    errorMessage.value = 'Заполните все поля'
+    return
+  }
+
   isLoading.value = true
   errorMessage.value = ''
   successMessage.value = ''
-  
-  // Simulate API call
-  setTimeout(() => {
-    if (email.value === DEMO_EMAIL && password.value === DEMO_PASSWORD) {
-      // Store login state
-      localStorage.setItem('qamqorlyq_user', JSON.stringify({
-        email: email.value,
-        isLoggedIn: true,
-        loginTime: Date.now()
-      }))
-      
-      successMessage.value = 'Успешный вход!'
-      setTimeout(() => {
-        router.push('/')
-      }, 1000)
-    } else {
-      errorMessage.value = 'Неверный email или пароль'
-    }
+
+  try {
+    // Симулируем задержку сети
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    // Проверяем учетные данные
+    const user = loginUser(email.value, password.value)
+    
+    // Сохраняем в store
+    userStore.login(user.email, user.name)
+    
+    successMessage.value = 'Успешный вход!'
+    
+    // Обновляем статус в store
+    userStore.checkAuth()
+    
+    // Перенаправляем на главную страницу
+    setTimeout(() => {
+      router.push('/')
+    }, 800)
+  } catch (err) {
+    errorMessage.value = err.message || 'Неверный email или пароль'
+  } finally {
     isLoading.value = false
-  }, 1000)
+  }
 }
 </script>
 
@@ -194,6 +225,29 @@ function handleLogin() {
 
 .login-footer {
   margin-top: 20px;
+}
+
+.login-footer-links {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.login-footer-links p {
+  color: var(--muted, #6b7280);
+  font-size: 14px;
+  margin: 0;
+}
+
+.link {
+  color: var(--accent, #ff7aa2);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #ff6b9d;
+  text-decoration: underline;
 }
 
 .error-message {
