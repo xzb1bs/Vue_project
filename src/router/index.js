@@ -1,44 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-    { 
-        path: '/', 
+    {   path: '/', 
         name: 'Home', 
         component: () => import('@/Pages/Home.vue')
     },
-    { 
-        path: '/login', 
+    {   path: '/login', 
         name: 'Login', 
         component: () => import('@/Pages/Login.vue')
     },
-    {
-        path: '/register',
+    {   path: '/register',
         name: 'Register',
         component: () => import('@/Pages/Register.vue')
     },
-    {
-        path: '/pets',
+    {   path: '/pets',
         component: () => import('@/Pages/PetDetailsWrapper.vue'),
         children: [
-            {
-                path: '',
+            {   path: '',
                 name: 'Pets',
                 component: () => import('@/Pages/Pets.vue')
             },
-            {
-                path: ':id',
+            {   path: ':id',
                 name: 'PetDetails',
                 component: () => import('@/Pages/PetDetails.vue')
             }
         ]
     },
-    {
-        path: '/pets-api',
+    {   path: '/pets-api',
         name: 'PetsApi',
         component: () => import('@/Pages/PetsApi.vue')
     },
-    {
-        path: '/:pathMatch(.*)*',
+    {   path: '/:pathMatch(.*)*',
         name: 'NotFound',
         component: () => import('@/Pages/NotFound.vue')
     }
